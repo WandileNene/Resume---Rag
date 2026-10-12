@@ -1,0 +1,638 @@
+{
+  "info": {
+    "_postman_id": "d8f6c2ce-0c31-4d4d-a7b1-5c4b4a61f4e2",
+    "name": "Resume RAG Backend",
+    "description": "Postman requests for the Resume RAG ingestion and retrieval phases.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "resumeFilePath",
+      "value": "C:/path/to/resume.pdf",
+      "description": "Set this to the absolute path of a PDF resume in Postman."
+    }
+  ],
+  "item": [
+    {
+      "name": "Phase 1 - Application Health",
+      "item": [
+        {
+          "name": "GET Application Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/v1/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Phase 2 - Database",
+      "item": [
+        {
+          "name": "GET Database Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/v1/health/db"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Phase 3 - Ingestion Health",
+      "item": [
+        {
+          "name": "GET Ingestion Module Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/v1/resume/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Phase 4 - Upload",
+      "item": [
+        {
+          "name": "POST Upload Resume PDF",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "{{resumeFilePath}}"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/v1/resume/upload"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Phase 5 - Extract Text",
+      "item": [
+        {
+          "name": "POST Extract PDF Text",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "{{resumeFilePath}}"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/v1/resume/extract"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Phase 6 - Clean Text",
+      "item": [
+        {
+          "name": "POST Clean Resume Text",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rawText\": \"Rajesh Mohan Kumar\\n\\n\\nTest Architect & Senior Agentic Test Engineer   \\n RAG\\nC#   C++   .NET\"\n}"
+            },
+            "url": "{{baseUrl}}/v1/resume/clean"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Phase 8 - Detect Skills",
+      "item": [
+        {
+          "name": "POST Detect Resume Skills",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rawText\": \"Experienced in Selenium WebDriver, Python, RAG, DeepEval and MCP (Model Context Protocol).\"\n}"
+            },
+            "url": "{{baseUrl}}/v1/resume/skills"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Phase 9 - Algorithm Parser",
+      "item": [
+        {
+          "name": "POST Parse Resume",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rawText\": \"Rajesh Mohan Kumar\\nTest Architect & Senior Agentic Test Engineer\\nTestleaf Software Solutions Private Limited\\n13+ years of experience\\nB.Tech - Information Technology\\nSelenium WebDriver, Core Java, C#, Python, REST Assured, Postman, RAG, DeepEval and MCP (Model Context Protocol)\"\n}"
+            },
+            "url": "{{baseUrl}}/v1/resume/parse"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Phase 10 - Optional LLM Parser",
+      "item": [
+        {
+          "name": "POST LLM Parse (Disabled by Default)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rawText\": \"Sample cleaned resume text\"\n}"
+            },
+            "url": "{{baseUrl}}/v1/resume/llm-parse"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Phase 11 - Mistral Embedding",
+      "item": [
+        {
+          "name": "POST Generate Resume Embedding",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Rajesh Mohan Kumar\",\n  \"role\": \"Test Architect & Senior Agentic Test Engineer\",\n  \"skills\": [\"RAG\", \"DeepEval\", \"MCP (Model Context Protocol)\"],\n  \"company\": \"Testleaf Software Solutions Private Limited\",\n  \"rawText\": \"Cleaned resume text\"\n}"
+            },
+            "url": "{{baseUrl}}/v1/resume/embed"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Phase 12 - MongoDB Storage",
+      "item": [
+        {
+          "name": "POST Store Resume",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fileName\": \"resume.pdf\",\n  \"resume\": {\n    \"name\": \"Rajesh Mohan Kumar\",\n    \"role\": \"Test Architect & Senior Agentic Test Engineer\",\n    \"skills\": [\"RAG\", \"DeepEval\", \"MCP (Model Context Protocol)\"]\n  },\n  \"rawText\": \"Cleaned resume text\",\n  \"embedding\": {{embeddingVector}}\n}"
+            },
+            "event": [
+              {
+                "listen": "prerequest",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.variables.set('embeddingVector', JSON.stringify(Array.from({ length: 1024 }, () => 0.001)));"
+                  ]
+                }
+              }
+            ],
+            "url": "{{baseUrl}}/v1/resume/store"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Phase 13 - Full Ingestion",
+      "item": [
+        {
+          "name": "POST Ingest Resume PDF",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "{{resumeFilePath}}"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/v1/resume/ingest"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Retrieval Phase 1 - Readiness",
+      "item": [
+        {
+          "name": "GET Search Readiness",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/v1/search/readiness"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Retrieval Phase 2 - Module Scaffold",
+      "item": [
+        {
+          "name": "GET Search Readiness (Scaffold Verification)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/v1/search/readiness"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Retrieval Phase 3 - Query Embeddings",
+      "item": [
+        {
+          "name": "POST Generate Query Embedding",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"mistral-embed\",\n  \"input\": \"senior agentic QA architect with RAG, DeepEval and MCP experience\"\n}"
+            },
+            "url": "{{baseUrl}}/v1/embeddings"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Retrieval Phase 5 - BM25 Search",
+      "item": [
+        {
+          "name": "POST BM25 Search - RAG",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"RAG\",\n  \"topK\": 20\n}"
+            },
+            "url": "{{baseUrl}}/v1/search/bm25"
+          }
+        },
+        {
+          "name": "POST BM25 Search - Filtered Architecture",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"agentic QA architect RAG MCP DeepEval\",\n  \"topK\": 20,\n  \"filters\": {\n    \"minYearsExperience\": 10\n  }\n}"
+            },
+            "url": "{{baseUrl}}/v1/search/bm25"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Retrieval Phase 6 - Vector Search",
+      "item": [
+        {
+          "name": "POST Vector Search",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"senior engineer who has built safe RAG and LLM evaluation systems\",\n  \"topK\": 20\n}"
+            },
+            "url": "{{baseUrl}}/v1/search/vector"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Retrieval Phase 8 - Hybrid Debug Search",
+      "item": [
+        {
+          "name": "POST Hybrid Search - Unfiltered",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('mode is hybrid-debug', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.mode).to.eql('hybrid-debug');",
+                  "});",
+                  "pm.test('bm25 array present', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.bm25).to.be.an('array');",
+                  "});",
+                  "pm.test('vector array present', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.vector).to.be.an('array');",
+                  "});",
+                  "pm.test('timings present with numeric values', () => {",
+                  "  const t = pm.response.json().timings;",
+                  "  pm.expect(t).to.have.all.keys('bm25Ms', 'embeddingMs', 'vectorMs');",
+                  "  pm.expect(t.bm25Ms).to.be.a('number');",
+                  "  pm.expect(t.embeddingMs).to.be.a('number');",
+                  "  pm.expect(t.vectorMs).to.be.a('number');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"agentic QA architect with RAG evaluation\",\n  \"topK\": 20\n}"
+            },
+            "url": "{{baseUrl}}/v1/search/hybrid"
+          }
+        },
+        {
+          "name": "POST Hybrid Search - Filtered by Experience",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('mode is hybrid-debug', () => {",
+                  "  pm.expect(pm.response.json().mode).to.eql('hybrid-debug');",
+                  "});",
+                  "pm.test('bm25 and vector arrays present', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.bm25).to.be.an('array');",
+                  "  pm.expect(body.vector).to.be.an('array');",
+                  "});",
+                  "pm.test('timings present', () => {",
+                  "  pm.expect(pm.response.json().timings).to.be.an('object');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"agentic QA architect with RAG evaluation\",\n  \"topK\": 20,\n  \"filters\": {\n    \"minYearsExperience\": 10\n  }\n}"
+            },
+            "url": "{{baseUrl}}/v1/search/hybrid"
+          }
+        },
+        {
+          "name": "POST Hybrid Search - Empty Query (expect 400 INVALID_HYBRID_REQUEST)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('errorCode is INVALID_HYBRID_REQUEST', () => {",
+                  "  pm.expect(pm.response.json().errorCode).to.eql('INVALID_HYBRID_REQUEST');",
+                  "});",
+                  "pm.test('success is false', () => {",
+                  "  pm.expect(pm.response.json().success).to.eql(false);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"\",\n  \"topK\": 20\n}"
+            },
+            "url": "{{baseUrl}}/v1/search/hybrid"
+          }
+        },
+        {
+          "name": "POST Hybrid Search - topK Zero (expect 400 INVALID_HYBRID_REQUEST)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('errorCode is INVALID_HYBRID_REQUEST', () => {",
+                  "  pm.expect(pm.response.json().errorCode).to.eql('INVALID_HYBRID_REQUEST');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"RAG evaluation\",\n  \"topK\": 0\n}"
+            },
+            "url": "{{baseUrl}}/v1/search/hybrid"
+          }
+        },
+        {
+          "name": "POST Hybrid Search - topK Above 100 (expect 400 INVALID_HYBRID_REQUEST)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('errorCode is INVALID_HYBRID_REQUEST', () => {",
+                  "  pm.expect(pm.response.json().errorCode).to.eql('INVALID_HYBRID_REQUEST');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"RAG evaluation\",\n  \"topK\": 101\n}"
+            },
+            "url": "{{baseUrl}}/v1/search/hybrid"
+          }
+        },
+        {
+          "name": "POST Hybrid Search - Negative minYearsExperience (expect 400 INVALID_HYBRID_REQUEST)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('errorCode is INVALID_HYBRID_REQUEST', () => {",
+                  "  pm.expect(pm.response.json().errorCode).to.eql('INVALID_HYBRID_REQUEST');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"RAG evaluation\",\n  \"topK\": 10,\n  \"filters\": {\n    \"minYearsExperience\": -1\n  }\n}"
+            },
+            "url": "{{baseUrl}}/v1/search/hybrid"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Retrieval Phase 11 - LLM Re-Rank",
+      "item": [
+        {
+          "name": "POST Re-rank Candidates",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"Need a senior QA architect experienced in RAG, DeepEval, MCP and enterprise GenAI governance\",\n  \"candidates\": [\n    {\n      \"resumeId\": \"candidate-a\",\n      \"snippet\": \"QA automation and governance with API test strategy\"\n    },\n    {\n      \"resumeId\": \"candidate-b\",\n      \"snippet\": \"RAG, DeepEval, MCP and enterprise governance with agentic QA leadership\"\n    }\n  ],\n  \"topK\": 2\n}"
+            },
+            "url": "{{baseUrl}}/v1/search/rerank"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Retrieval Phase 12 - Candidate Summary",
+      "item": [
+        {
+          "name": "POST Summarize Candidate Fit",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"Senior QA architect with GenAI RAG and evaluation experience\",\n  \"candidate\": {\n    \"resumeId\": \"candidate-a\",\n    \"snippet\": \"RAG, DeepEval, MCP and enterprise governance with agentic QA leadership\",\n    \"skills\": [\"RAG\", \"DeepEval\", \"MCP\"],\n    \"sources\": [\"bm25\", \"vector\"]\n  },\n  \"style\": \"short\",\n  \"maxTokens\": 120\n}"
+            },
+            "url": "{{baseUrl}}/v1/search/summarize"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Retrieval Phase 14 - Final Search",
+      "item": [
+        {
+          "name": "POST Final Resume Search",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"Senior agentic QA architect with RAG, MCP, DeepEval, API automation and Azure DevOps experience\",\n  \"filters\": {\n    \"minYearsExperience\": 10\n  },\n  \"options\": {\n    \"bm25TopK\": 20,\n    \"vectorTopK\": 20,\n    \"rerankTopN\": 10,\n    \"finalTopK\": 5,\n    \"summarize\": true,\n    \"summaryStyle\": \"short\"\n  }\n}"
+            },
+            "url": "{{baseUrl}}/v1/search"
+          }
+        }
+      ]
+    }
+  ]
+}

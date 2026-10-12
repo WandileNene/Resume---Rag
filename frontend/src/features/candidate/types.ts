@@ -1,0 +1,22 @@
+export type CandidateProfile = {
+  _id: string;
+  fileName?: string;
+  rawText?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  phoneNumber?: string;
+  location?: string;
+  company?: string;
+  role?: string;
+  title?: string;
+  education?: string | Array<{ degree?: string; institution?: string; year?: string }>;
+  totalExperience?: number;
+  relevantExperience?: number;
+  skills?: string[];
+  jobTitles?: string[];
+  experienceSummary?: string;
+  experience?: Array<{ company?: string; title?: string; duration?: string; description?: string }>;
+  projects?: Array<{ title: string; description?: string }>;
+  certifications?: string[];
+};

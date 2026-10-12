@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+!.env.example
+uploads/
+npm-debug.log*
+
+# Testing and coverage
+.pytest_cache/
+.coverage
